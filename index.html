@@ -1,1 +1,197 @@
-<h4>Confirmación</h4>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de Juan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1, h4  {
+      color: #2e7d32;
+    }
+
+    h1 {
+        margin-bottom: 0;
+    }
+    
+    h4 {
+        margin-top: 0;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background: #2e7d32;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #1b5e20;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #444;
+      display: none;
+    }
+    
+    .accountValue {
+        width: 92%;
+    }
+
+    /* Animación de entrada */
+    .hidden {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.5s ease, max-height 0.5s ease;
+    }
+
+    .visible {
+        opacity: 1;
+        max-height: 200px;
+        transition: opacity 0.5s ease, max-height 0.5s ease;
+    }
+
+    /* Botón deshabilitado */
+    button:disabled {
+        background: #ccc;
+        color: #666;
+        cursor: not-allowed;
+        box-shadow: none;
+        animation: none; 
+        transform: scale(1);
+    }
+
+    /* Glow + latido ultra suave */
+    .glow {
+      box-shadow: 0 0 8px #4caf50;
+      animation: pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 8px #4caf50; }
+      50% { transform: scale(1.02); box-shadow: 0 0 12px #66bb6a; }
+      100% { transform: scale(1); box-shadow: 0 0 8px #4caf50; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bienvenido Juan</h1>
+    <br>
+    <h4>🎉¡Felicitaciones por tu confirmación! 🎉</h4>
+    <p>Que este nuevo paso te llene de fuerza para seguir tus sueños, tomar buenas decisiones y ser siempre un ejemplo de grandeza 🚀</p>
+
+    <label for="opcion">Como regalo, tu primo y ahora padrino favorito, te regalará una pequeña suma monetaria para que la destines en lo que quieras. ¿Dónde quieres que te envíe el dinero?</label>
+    <select id="opcion">
+      <option value="">-- Selecciona una opción --</option>
+      <option value="CuentaAhorros">Cuenta de Ahorros</option>
+      <option value="Nequi">Nequi</option>
+    </select>
+
+    <div id="accountContainer" class="hidden">
+      <label id="accountTitle" for="valor">Ingresa tu número de cuenta o nequi</label>
+      <input class="accountValue" type="number" id="valor" placeholder="Ej: 50000">
+    </div>
+    
+    <button onclick="mostrarMensaje()" id="sendButton" disabled>Enviar</button>
+    <small>Al dar click en enviar, serás redireccionado a Whatsapp y posterior a ello, te enviaré la plata🤑</small>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <script>
+    const selectOpcion = document.getElementById("opcion");
+    const accountContainer = document.getElementById("accountContainer");
+    const accountTitle = document.getElementById("accountTitle");
+    const accountValue = document.getElementById("valor");
+    const sendButton = document.getElementById("sendButton");
+
+    selectOpcion.addEventListener("change", function () {
+      const opcion = this.value;
+
+      if (opcion === "CuentaAhorros") {
+        accountTitle.textContent = "Ingresa tu número de cuenta de ahorros";
+        accountValue.placeholder = "Ojalá sea Bancolombia";
+        accountContainer.classList.remove("hidden");
+        accountContainer.classList.add("visible");
+      } else if (opcion === "Nequi") {
+        accountTitle.textContent = "Ingresa tu número de Nequi";
+        accountValue.placeholder = "Ej: 3053732379";
+        accountContainer.classList.remove("hidden");
+        accountContainer.classList.add("visible");
+      } else {
+        accountContainer.classList.remove("visible");
+        accountContainer.classList.add("hidden");
+      }
+      validarFormulario();
+    });
+
+    accountValue.addEventListener("input", validarFormulario);
+
+    function validarFormulario() {
+        if (selectOpcion.value && accountValue.value.trim() !== "") {
+            sendButton.disabled = false;
+            sendButton.classList.add("glow");
+        } else {
+            sendButton.disabled = true;
+            sendButton.classList.remove("glow");
+        }
+    }
+
+    function mostrarMensaje() {
+      const resultado = document.getElementById("resultado");
+
+      if(!selectOpcion.value || !accountValue.value.trim()) {
+        resultado.innerHTML = "⚠️ Por favor, selecciona una opción y escribe un valor.";
+        resultado.style.display = "block";
+      } else {
+
+        const mensaje = `Hola primo favorito y ahora también padrino 😎, quiero recibir mi regalo de confirmación 🎉. 
+            He elegido: *${selectOpcion.value}* 
+            Número: *${accountValue.value}* 
+            ¡Gracias por este detalle tan especial! 🙌💚`;
+
+        // Redirigir a WhatsApp
+        const url = `https://wa.me/573014199976?text=${encodeURIComponent(mensaje)}`;
+        window.open(url, "_blank");
+
+        resultado.innerHTML = "Listo, continúa los pasos por whatsapp 😎";
+        selectOpcion.disabled = true;
+        accountValue.disabled = true;
+        sendButton.disabled = true;
+        sendButton.classList.remove("glow");
+        resultado.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
